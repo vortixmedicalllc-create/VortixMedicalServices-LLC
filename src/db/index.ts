@@ -15,6 +15,8 @@ export type Db = NodePgDatabase<typeof schema>;
 
 const g = globalThis as unknown as { __vortixDb?: Promise<Db> };
 
+export class DatabaseConfigError extends Error {}
+
 const migrationsFolder = path.join(process.cwd(), "drizzle");
 
 async function connect(): Promise<Db> {
@@ -33,6 +35,13 @@ async function connect(): Promise<Db> {
       await migrate(db, { migrationsFolder });
     }
     return db;
+  }
+
+  // Hosted platforms have read-only, short-lived disks: the embedded database cannot work there.
+  if (process.env.VERCEL || process.env.NETLIFY || process.env.RENDER) {
+    throw new DatabaseConfigError(
+      "DATABASE_URL is not set. Add your PostgreSQL connection string to the hosting provider's environment variables and redeploy.",
+    );
   }
 
   const { PGlite } = await import("@electric-sql/pglite");

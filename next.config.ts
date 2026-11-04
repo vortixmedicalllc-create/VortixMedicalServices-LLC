@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // PGlite ships WebAssembly and data files that must be loaded from node_modules at runtime.
   serverExternalPackages: ["@electric-sql/pglite", "pg"],
+  // Ship the SQL migrations with every server function so DATABASE_AUTO_MIGRATE works on serverless hosts.
+  outputFileTracingIncludes: { "/**": ["./drizzle/**/*"] },
   images: { formats: ["image/avif", "image/webp"] },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
