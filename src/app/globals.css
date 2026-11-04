@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   VORTIX BRAND TOKENS
+   Every brand color below was sampled directly from the supplied
+   logo (images/vortix-logo.png) or the supplied brand cover artwork.
+   Derived values are shades/tints of those originals, used only
+   where accessible text contrast requires them.
+   ------------------------------------------------------------------ */
+:root {
+  /* Sampled from logo */
+  --brand-blue: #0a72ba;        /* stethoscope left arm + chestpiece ring */
+  --brand-teal: #12a594;        /* right arm, cross disc, "MEDICAL SERVICES" */
+  --brand-slate: #1d3b47;       /* "VORTIX" wordmark */
+  --brand-tube: #0e8ba7;        /* midpoint of the tube's teal-to-blue blend */
+  --brand-tint: #eaf4fa;        /* soft field color from the supplied cover */
+
+  /* Derived (shades/tints of the sampled colors) */
+  --brand-blue-deep: #085e99;   /* hover/pressed for blue */
+  --brand-teal-ink: #0c7d70;    /* teal at AA contrast for small text on white */
+  --brand-teal-soft: #8fd6cc;   /* teal tint for text on slate backgrounds */
+  --brand-slate-deep: #132a33;  /* deepest neutral */
+
+  --text-primary: #1d3b47;
+  --text-secondary: #4a626c;
+  --surface: #ffffff;
+  --surface-muted: #f5f9fb;
+  --line: #d6e2e8;
+}
+
+@theme inline {
+  --color-blue: var(--brand-blue);
+  --color-blue-deep: var(--brand-blue-deep);
+  --color-teal: var(--brand-teal);
+  --color-teal-ink: var(--brand-teal-ink);
+  --color-teal-soft: var(--brand-teal-soft);
+  --color-tube: var(--brand-tube);
+  --color-tint: var(--brand-tint);
+  --color-slate: var(--brand-slate);
+  --color-slate-deep: var(--brand-slate-deep);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-secondary);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-line: var(--line);
+
+  --font-display: var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-source), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 6px;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--surface);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    color: var(--brand-slate);
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p { text-wrap: pretty; }
+  ::selection { background: var(--brand-teal); color: #fff; }
+  :focus-visible {
+    outline: 2px solid var(--brand-blue);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+}
+
+@layer components {
+  /* Letter-spaced label echoing the "MEDICAL SERVICES" lockup */
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--brand-teal-ink);
+  }
+  .rule-accent {
+    display: block;
+    width: 3rem;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--brand-teal);
+  }
+  .prose-vortix p { margin-top: 1rem; color: var(--text-secondary); }
+  .prose-vortix h2 { margin-top: 2.5rem; font-size: 1.5rem; font-weight: 700; }
+  .prose-vortix h3 { margin-top: 1.75rem; font-size: 1.15rem; font-weight: 700; }
+  .prose-vortix ul { margin-top: 1rem; padding-left: 1.25rem; list-style: disc; color: var(--text-secondary); }
+  .prose-vortix li { margin-top: 0.4rem; }
+  .prose-vortix li::marker { color: var(--brand-teal); }
+  .prose-vortix a { color: var(--brand-blue); text-decoration: underline; text-underline-offset: 3px; }
+}
+
+/* Reveal-on-scroll (progressive: content is visible without JS) */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Animated line drawing for diagrams */
+.draw-path {
+  stroke-dasharray: var(--len, 1200);
+  stroke-dashoffset: var(--len, 1200);
+  animation: draw 2.4s cubic-bezier(0.6, 0.1, 0.2, 1) 0.3s forwards;
+}
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+.pulse-node { animation: pulse 3.2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .draw-path { animation: none; stroke-dashoffset: 0; }
+  .pulse-node { animation: none; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+}
