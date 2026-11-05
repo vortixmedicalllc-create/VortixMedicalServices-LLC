@@ -85,6 +85,7 @@ export const users = pgTable(
 );
 
 export type NotificationPrefs = {
+  emailAlerts?: boolean;
   newLeadAssigned?: boolean;
   taskAssigned?: boolean;
   taskDue?: boolean;
@@ -365,10 +366,23 @@ export const notifications = pgTable(
     href: text("href"),
     dedupeKey: text("dedupe_key"),
     readAt: timestamp("read_at", { withTimezone: true }),
+    // Email outbox: null = in-app only, "pending" = waiting to be emailed, "sent" / "failed".
+    emailStatus: text("email_status").$type<"pending" | "sent" | "failed">(),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [index("notifications_user_idx").on(t.userId, t.readAt), uniqueIndex("notifications_dedupe_uq").on(t.userId, t.dedupeKey)],
+  (t) => [
+    index("notifications_user_idx").on(t.userId, t.readAt),
+    uniqueIndex("notifications_dedupe_uq").on(t.userId, t.dedupeKey),
+    index("notifications_email_idx").on(t.emailStatus),
+  ],
 );
+
+/** Fixed-window rate limit counters, shared by every server instance (works on serverless hosts). */
+export const rateLimits = pgTable("rate_limits", {
+  key: text("key").primaryKey(),
+  count: integer("count").notNull().default(0),
+  resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+});
 
 export const auditLogs = pgTable(
   "audit_logs",

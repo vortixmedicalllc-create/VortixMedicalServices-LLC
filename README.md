@@ -39,7 +39,7 @@ Go to **Team → Add Team Member**, choose a role, and the CRM creates a one-tim
 ```bash
 npm run typecheck
 npm run lint
-npm test          # 19 unit and integration tests (in-memory Postgres)
+npm test          # 26 unit and integration tests (in-memory Postgres)
 npm run build
 ```
 
@@ -54,7 +54,20 @@ npm run build
 5. Create the Owner at `/crm/setup`, then remove `CRM_SETUP_TOKEN`.
 
 > PGlite is for development and testing only. Always use `DATABASE_URL` in production.
-> Login rate limiting is per server process. If you run several instances, add a shared store such as Redis.
+> Rate limits (login, password reset, contact form) are stored in PostgreSQL, so they hold across every server instance.
+
+### Deploy on Vercel (free plan for testing)
+
+1. Create a free PostgreSQL database at neon.tech and copy the **pooled** connection string (it contains `-pooler`). Reveal the password before copying; a masked `****` password causes `auth_failed`.
+2. Import the GitHub repository in Vercel and set: `DATABASE_URL`, `DATABASE_SSL=true`, `DATABASE_POOL_MAX=3`, `DATABASE_AUTO_MIGRATE=true`, `NEXT_PUBLIC_SITE_URL`, `CRM_SETUP_TOKEN`, `CRON_SECRET`, and optionally the email settings.
+3. Deploy, then open `/api/health`. It reports `ok`, `not_configured`, `auth_failed`, `connection_failed`, or `tables_missing`, with the fix for each. It never shows secrets.
+4. Open `/crm/setup` to create the Owner, then remove `CRM_SETUP_TOKEN` and redeploy.
+
+`vercel.json` schedules `/api/cron/daily` once a day (13:00 UTC). Vercel sends `CRON_SECRET` automatically. The job creates due and overdue task reminders for every user, sends queued emails, and removes expired sessions and tokens.
+
+### Separate CRM address (optional)
+
+Set `CRM_HOST=crm.yourdomain.com` and add that subdomain to the Vercel project. The CRM is then served only there, `/crm` on the public site redirects to it (308), and the CRM address serves no public pages. Leave `CRM_HOST` empty to keep the CRM at `/crm`.
 
 ### Schema changes
 
@@ -113,10 +126,15 @@ tests/                   Vitest unit + integration tests
 | Service | Needed for | Without it |
 | --- | --- | --- |
 | PostgreSQL (`DATABASE_URL`) | Production data | Local PGlite only (not for production) |
-| Resend (`RESEND_API_KEY`, `CONTACT_FROM_EMAIL`) | Inquiry emails, invitations, reset emails | CRM shows one-time links to admins; self-service "forgot password" tells the user to ask an admin |
+| Email: SMTP (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`) **or** Resend (`RESEND_API_KEY`, `CONTACT_FROM_EMAIL`) | Inquiry emails, invitations, password resets, email alerts | CRM shows one-time links to admins; "forgot password" tells the user to ask an admin |
+| `CRON_SECRET` | Daily reminders and email retries | Reminders are still created whenever a user opens the CRM |
 | Webhook (`CONTACT_WEBHOOK_URL`) | Forwarding inquiries elsewhere | Not used |
 
-Email sync, calendar sync, and outbound emailing from the CRM are **not implemented**. Emails and meetings are logged manually on each record.
+**Email with SMTP before you own a domain:** with Gmail, turn on 2-Step Verification, create an app password at myaccount.google.com/apppasswords, and set `SMTP_HOST=smtp.gmail.com`, `SMTP_PORT=465`, `SMTP_USER=<your Gmail>`, `SMTP_PASS=<the 16-character app password>`. Gmail limits daily sending, which is fine for a small team. Switch to Resend with your own domain later.
+
+**Email alerts:** when email is configured, each in-app notification (new website lead, assignment, task assigned, task due or overdue, deal changes) is also emailed after the change is saved. Each person can turn this off under My Profile.
+
+**Calendar:** every open task with a due date has an "Add to calendar" link (.ics) for Google Calendar, Outlook, and Apple Calendar. Mailbox sync (reading or sending from Gmail or Outlook inside the CRM) is **not implemented**; log emails and meetings manually on each record.
 
 ## Missing business information (owner action)
 
@@ -133,7 +151,7 @@ Search the code for `OWNER ACTION` and `TODO(owner)`:
 
 - No Postgres row-level security. Authorization is enforced in one server-side layer (`src/server/permissions.ts`, `scopeWhere`) that every query goes through.
 - Lead statuses are fixed. Lead sources, service categories, and pipeline stages can be edited in Settings.
-- Notifications are in-app only. Email alerts exist only for new website inquiries, and only when email is configured. Due-date reminders are generated when the user opens the CRM, not by a background scheduler.
+- Email alerts and the daily reminder job need email settings and `CRON_SECRET` to be configured. Mailbox and two-way calendar sync are not built.
 - There are no client portal, DME, billing, or AI operations modules yet. The schema and route structure leave room to add them.
 - **Privacy boundary:** this is a business-relationship CRM. It must not store patient information or other PHI, and it is not represented as HIPAA compliant. Any future module that handles PHI needs its own security architecture, Business Associate Agreements, and compliance review before it is built.
 

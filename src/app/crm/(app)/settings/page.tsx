@@ -3,7 +3,7 @@ import Link from "next/link";
 import { requireUser } from "@/server/auth";
 import { can, permissionLabels, rolePermissions } from "@/server/permissions";
 import { getSettings, labelMaps } from "@/server/lookups";
-import { isEmailConfigured } from "@/server/email";
+import { emailProvider, isEmailConfigured } from "@/server/email";
 import { LEAD_STATUSES, leadStatusLabels, ROLES, roleLabels } from "@/server/constants";
 import { CompanySettingsForm, LookupEditor } from "@/components/crm/SettingsClient";
 import { Alert, Badge, Card, LinkButton, PageHeader } from "@/components/crm/ui";
@@ -49,14 +49,28 @@ export default async function SettingsPage() {
           <ul className="space-y-3 text-sm">
             <li className="flex items-start justify-between gap-3">
               <span>
-                <span className="block font-semibold">Email delivery (Resend)</span>
-                <span className="text-muted">Invitations, password resets, and new-inquiry emails.</span>
+                <span className="block font-semibold">Email delivery{emailProvider() ? ` (${emailProvider() === "smtp" ? "SMTP" : "Resend"})` : ""}</span>
+                <span className="text-muted">Invitations, password resets, new-inquiry emails, and email alerts.</span>
               </span>
               {isEmailConfigured() ? <Badge tone="teal">Connected</Badge> : <Badge tone="amber">Not configured</Badge>}
             </li>
             <li className="flex items-start justify-between gap-3">
               <span>
-                <span className="block font-semibold">Email and calendar sync</span>
+                <span className="block font-semibold">Calendar</span>
+                <span className="text-muted">Tasks with a due date offer an Add to calendar download for Google, Outlook, or Apple Calendar.</span>
+              </span>
+              <Badge tone="teal">Active</Badge>
+            </li>
+            <li className="flex items-start justify-between gap-3">
+              <span>
+                <span className="block font-semibold">Daily reminder job</span>
+                <span className="text-muted">Creates due and overdue task reminders and sends queued emails once a day.</span>
+              </span>
+              {process.env.CRON_SECRET && process.env.CRON_SECRET.length >= 16 ? <Badge tone="teal">Configured</Badge> : <Badge tone="amber">Needs CRON_SECRET</Badge>}
+            </li>
+            <li className="flex items-start justify-between gap-3">
+              <span>
+                <span className="block font-semibold">Mailbox sync</span>
                 <span className="text-muted">Not available in this version. Log emails and meetings manually on each record.</span>
               </span>
               <Badge>Not available</Badge>
@@ -69,7 +83,7 @@ export default async function SettingsPage() {
               <Badge tone="teal">Active</Badge>
             </li>
           </ul>
-          {!isEmailConfigured() && <p className="mt-4 text-xs text-muted">Set RESEND_API_KEY and CONTACT_FROM_EMAIL in the server environment to enable email. See the README.</p>}
+          {!isEmailConfigured() && <p className="mt-4 text-xs text-muted">To enable email, set either SMTP_HOST, SMTP_USER and SMTP_PASS (for example a Gmail app password), or RESEND_API_KEY and CONTACT_FROM_EMAIL, in the hosting environment. See the README.</p>}
         </Card>
 
         <Card title="Lead statuses">

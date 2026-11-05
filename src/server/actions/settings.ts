@@ -154,6 +154,7 @@ export async function saveProfileAction(_: ActionResult, fd: FormData): Promise<
     const jobTitle = String(fd.get("jobTitle") || "").trim();
     if (name.length < 2 || name.length > 100) return { ok: false, error: "Enter your name.", fields: { name: "Required" } };
     const prefs = {
+      emailAlerts: fd.get("emailAlerts") === "on",
       newLeadAssigned: fd.get("newLeadAssigned") === "on",
       taskAssigned: fd.get("taskAssigned") === "on",
       taskDue: fd.get("taskDue") === "on",

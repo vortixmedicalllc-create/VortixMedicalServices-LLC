@@ -199,7 +199,7 @@ export function LookupEditor({
   );
 }
 
-export function ProfileForm({ initial }: { initial: { name: string; jobTitle: string | null; prefs: Record<string, boolean | undefined> } }) {
+export function ProfileForm({ initial, emailConfigured }: { initial: { name: string; jobTitle: string | null; prefs: Record<string, boolean | undefined> }; emailConfigured: boolean }) {
   const [state, action] = useActionState<ActionResult, FormData>(saveProfileAction, { ok: false });
   useResultToast(state);
   const p = initial.prefs;
@@ -231,7 +231,15 @@ export function ProfileForm({ initial }: { initial: { name: string; jobTitle: st
           {pref("taskDue", "Due and overdue tasks", "Reminders for your tasks due within 24 hours and overdue tasks.")}
           {pref("dealChanges", "Deal changes", "Stage changes and assignments on deals you own.")}
         </div>
-        <p className="mt-2 text-xs text-muted">Email notifications for new website inquiries are sent only when email delivery is configured for the CRM.</p>
+      </fieldset>
+      <fieldset>
+        <legend className="text-sm font-bold">Email</legend>
+        <div className="mt-1">
+          {pref("emailAlerts", "Also send these alerts by email", "Each alert you have turned on above is also emailed to you.")}
+        </div>
+        <p className="mt-1 text-xs text-muted">
+          {emailConfigured ? "Email delivery is connected for this CRM." : "Email delivery is not configured for this CRM yet, so no emails are sent. An Owner or Admin can connect it in the hosting settings."}
+        </p>
       </fieldset>
       <div className="flex justify-end">
         <SubmitButton>Save Profile</SubmitButton>

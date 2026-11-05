@@ -3,6 +3,8 @@ import { and, eq, inArray } from "drizzle-orm";
 import type { Db } from "@/db";
 import { activities, auditLogs, notifications, users, type NotificationPrefs } from "@/db/schema";
 import type { ActivityType } from "./constants";
+import { isEmailConfigured } from "./email";
+import { scheduleOutboxFlush } from "./outbox";
 
 type Tx = Pick<Db, "insert" | "select" | "update">;
 
@@ -73,17 +75,18 @@ export async function notify(
   const key = prefKey[n.type];
   const allowed = recipients.filter((r) => !key || r.prefs?.[key] !== false);
   if (!allowed.length) return;
-  await tx
-    .insert(notifications)
-    .values(
-      allowed.map((r) => ({
-        userId: r.id,
-        type: n.type,
-        title: n.title,
-        body: n.body ?? null,
-        href: n.href ?? null,
-        dedupeKey: n.dedupeKey ?? null,
-      })),
-    )
-    .onConflictDoNothing();
+  const emailOn = isEmailConfigured();
+  const rows = allowed.map((r) => ({
+    userId: r.id,
+    type: n.type,
+    title: n.title,
+    body: n.body ?? null,
+    href: n.href ?? null,
+    dedupeKey: n.dedupeKey ?? null,
+    // Queue an email when email is configured and the person has not turned email alerts off.
+    emailStatus: emailOn && r.prefs?.emailAlerts !== false ? ("pending" as const) : null,
+  }));
+  await tx.insert(notifications).values(rows).onConflictDoNothing();
+  const queued = rows.some((r) => r.emailStatus === "pending");
+  if (queued) await scheduleOutboxFlush();
 }

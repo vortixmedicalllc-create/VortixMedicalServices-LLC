@@ -9,7 +9,7 @@ import { AuthError, destroyAllSessionsForUser, requireActionUser } from "../auth
 import { assignableRoles, canManageUser } from "../permissions";
 import { audit } from "../events";
 import { issueAuthToken } from "../tokens";
-import { appUrl, escapeHtml, isEmailConfigured, sendEmail } from "../email";
+import { appUrl, emailButton, escapeHtml, isEmailConfigured, sendEmail } from "../email";
 import { ROLES, roleLabels, type Role } from "../constants";
 import { fieldErrors, formObject, type ActionResult } from "../validation";
 
@@ -39,7 +39,7 @@ async function sendInvite(email: string, name: string, link: string, inviter: st
   const r = await sendEmail({
     to: email,
     subject: "You have been invited to Vortix CRM",
-    html: `<p>Hello ${escapeHtml(name)},</p><p>${escapeHtml(inviter)} created a Vortix CRM account for you. Use the link below to set your password. The link expires in 72 hours and can be used once.</p><p><a href="${link}">Set your password</a></p>`,
+    html: `<p>Hello ${escapeHtml(name)},</p><p>${escapeHtml(inviter)} created a Vortix CRM account for you. Use the link below to set your password. The link expires in 72 hours and can be used once.</p>${emailButton(link, "Set your password")}`,
   });
   return r.sent;
 }
@@ -127,7 +127,7 @@ export async function issueResetLinkAction(id: string): Promise<TeamResult> {
     const purpose = target.passwordHash ? "reset" : "invite";
     const token = await issueAuthToken(id, purpose, actor.id);
     const link = appUrl(`/crm/reset-password?token=${token}`);
-    const emailed = purpose === "invite" ? await sendInvite(target.email, target.name, link, actor.name) : (await sendEmail({ to: target.email, subject: "Reset your Vortix CRM password", html: `<p>An administrator issued a password reset for your account. The link expires in 60 minutes.</p><p><a href="${link}">Reset password</a></p>` })).sent;
+    const emailed = purpose === "invite" ? await sendInvite(target.email, target.name, link, actor.name) : (await sendEmail({ to: target.email, subject: "Reset your Vortix CRM password", html: `<p>An administrator issued a password reset for your account. The link expires in 60 minutes.</p>${emailButton(link, "Reset password")}` })).sent;
     await audit(db, { actorId: actor.id, action: `user.${purpose}_link`, entityType: "user", entityId: id, changes: { emailed } });
     return { ok: true, link, emailed };
   } catch (e) {

@@ -295,6 +295,14 @@ export function TaskList({
                       </a>
                     </>
                   )}
+                  {t.dueAt && !done && t.status !== "cancelled" && (
+                    <>
+                      {" · "}
+                      <a href={`/crm/tasks/${t.id}/calendar`} className="text-blue hover:underline" aria-label={`Add "${t.title}" to your calendar`}>
+                        Add to calendar
+                      </a>
+                    </>
+                  )}
                 </p>
               </div>
             </li>

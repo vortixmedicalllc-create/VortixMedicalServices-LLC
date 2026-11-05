@@ -154,21 +154,9 @@ export async function requirePagePermission(perm: Permission) {
   return user;
 }
 
-/* ---------------- Rate limiting (per process) ---------------- */
+/* ---------------- Rate limiting (shared, database-backed) ---------------- */
 
-const buckets = new Map<string, { count: number; reset: number }>();
-
-/** Returns true when the key has exceeded `max` attempts in `windowMs`. */
-export function rateLimit(key: string, max: number, windowMs: number) {
-  const now = Date.now();
-  const b = buckets.get(key);
-  if (!b || b.reset < now) {
-    buckets.set(key, { count: 1, reset: now + windowMs });
-    return false;
-  }
-  b.count += 1;
-  return b.count > max;
-}
+export { rateLimit } from "./ratelimit";
 
 export async function clientIp() {
   const h = await headers();

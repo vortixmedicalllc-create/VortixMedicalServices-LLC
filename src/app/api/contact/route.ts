@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server";
-import { and, eq, inArray } from "drizzle-orm";
 import { validateContact, type ContactPayload } from "@/lib/contact";
 import { getDb } from "@/db";
-import { users } from "@/db/schema";
 import { createLead, leadCode } from "@/server/services/leads";
-import { appUrl, escapeHtml, isEmailConfigured, sendEmail } from "@/server/email";
+import { rateLimit } from "@/server/ratelimit";
+import { appUrl, emailButton, escapeHtml, isEmailConfigured, sendEmail } from "@/server/email";
 
 /**
  * Public business-inquiry endpoint used by the website contact form.
@@ -14,29 +13,14 @@ import { appUrl, escapeHtml, isEmailConfigured, sendEmail } from "@/server/email
  *    with duplicate flagging, the configured assignment rule, an activity entry,
  *    an audit log entry, and in-app notifications.
  * 3. Only after the database write succeeds does the visitor see a success message.
- * 4. Sends an email notification when email delivery is configured (optional; a
- *    failed email never undoes the saved lead).
+ * 4. Emails the assignee (or Owners/Admins) through the notification outbox, and
+ *    CONTACT_TO_EMAIL if set, when email is configured. A failed email never undoes the saved lead.
  *
  * Privacy: inquiry contents are never written to server logs. The form is for
  * business inquiries only and does not collect patient information.
  */
 
 export const runtime = "nodejs";
-
-const hits = new Map<string, { count: number; reset: number }>();
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 5;
-
-function rateLimited(ip: string) {
-  const now = Date.now();
-  const entry = hits.get(ip);
-  if (!entry || entry.reset < now) {
-    hits.set(ip, { count: 1, reset: now + WINDOW_MS });
-    return false;
-  }
-  entry.count += 1;
-  return entry.count > MAX_PER_WINDOW;
-}
 
 const SERVICE_KEYS: Record<string, string> = {
   "DME Services": "dme",
@@ -55,7 +39,7 @@ const clean = (v: unknown, max: number) =>
 
 export async function POST(req: Request) {
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (rateLimited(ip)) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
+  if (await rateLimit(`contact:${ip}`, 5, 10 * 60_000)) return NextResponse.json({ ok: false, error: "rate_limited" }, { status: 429 });
 
   let body: Partial<ContactPayload>;
   try {
@@ -113,35 +97,22 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
   }
 
-  // Optional email notification (never blocks or reverses the saved lead)
-  if (isEmailConfigured()) {
-    try {
-      const db = await getDb();
-      let to: string[] = (process.env.CONTACT_TO_EMAIL || "").split(",").map((s) => s.trim()).filter(Boolean);
-      if (result.lead.assignedToId) {
-        const [u] = await db.select({ email: users.email }).from(users).where(eq(users.id, result.lead.assignedToId));
-        if (u) to.push(u.email);
-      }
-      if (!to.length) {
-        const admins = await db.select({ email: users.email }).from(users).where(and(eq(users.isActive, true), inArray(users.role, ["owner", "admin"])));
-        to = admins.map((a) => a.email);
-      }
-      if (to.length) {
-        const link = appUrl(`/crm/leads/${result.lead.id}`);
-        await sendEmail({
-          to: [...new Set(to)],
-          replyTo: inquiry.email,
-          subject: `New website inquiry: ${service} (${inquiry.companyName})`,
-          html: `<h2 style="font-family:sans-serif;color:#1d3b47">New website inquiry ${leadCode(result.lead.number)}</h2>
-<p style="font-family:sans-serif;font-size:14px"><b>${escapeHtml(fullName)}</b>, ${escapeHtml(inquiry.jobTitle)} at ${escapeHtml(inquiry.companyName)}<br>
+  // Team members are emailed through the CRM notification outbox (sent after this response).
+  // CONTACT_TO_EMAIL optionally copies every inquiry to a shared inbox as well.
+  const shared = (process.env.CONTACT_TO_EMAIL || "").split(",").map((s) => s.trim()).filter(Boolean);
+  if (shared.length && isEmailConfigured()) {
+    const link = appUrl(`/crm/leads/${result.lead.id}`);
+    const html = `<h2 style="margin:0 0 12px;font-size:18px">New website inquiry ${leadCode(result.lead.number)}</h2>
+<p><b>${escapeHtml(fullName)}</b>, ${escapeHtml(inquiry.jobTitle)} at ${escapeHtml(inquiry.companyName)}<br>
 ${escapeHtml(inquiry.email)}${inquiry.phone ? ` · ${escapeHtml(inquiry.phone)}` : ""}<br>Service of interest: ${escapeHtml(service)}</p>
-<p style="font-family:sans-serif;font-size:14px;white-space:pre-wrap">${escapeHtml(inquiry.message)}</p>
-${result.duplicate ? '<p style="font-family:sans-serif;color:#8a5300">Flagged as a possible duplicate of an existing lead.</p>' : ""}
-<p><a href="${link}">Open the lead in Vortix CRM</a></p>`,
-        });
-      }
-    } catch (err) {
-      console.error("[contact] notification email failed:", err instanceof Error ? err.message : "unknown error");
+<p style="white-space:pre-wrap">${escapeHtml(inquiry.message)}</p>
+${result.duplicate ? '<p style="color:#8a5300">Flagged as a possible duplicate of an existing lead.</p>' : ""}
+${emailButton(link, "Open the lead in Vortix CRM")}`;
+    try {
+      const { after } = await import("next/server");
+      after(() => sendEmail({ to: shared, replyTo: inquiry.email, subject: `New website inquiry: ${service} (${inquiry.companyName})`, html }));
+    } catch {
+      await sendEmail({ to: shared, replyTo: inquiry.email, subject: `New website inquiry: ${service} (${inquiry.companyName})`, html });
     }
   }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { requireUser } from "@/server/auth";
 import { roleLabels } from "@/server/constants";
+import { isEmailConfigured } from "@/server/email";
 import { PasswordForm, ProfileForm } from "@/components/crm/SettingsClient";
 import { Card, PageHeader } from "@/components/crm/ui";
 
@@ -17,7 +18,7 @@ export default async function ProfilePage() {
       />
       <div className="grid gap-5 xl:grid-cols-2">
         <Card title="Profile and notifications">
-          <ProfileForm initial={{ name: user.name, jobTitle: user.jobTitle, prefs: (user.notificationPrefs ?? {}) as Record<string, boolean | undefined> }} />
+          <ProfileForm emailConfigured={isEmailConfigured()} initial={{ name: user.name, jobTitle: user.jobTitle, prefs: (user.notificationPrefs ?? {}) as Record<string, boolean | undefined> }} />
         </Card>
         <Card title="Change password">
           <PasswordForm />

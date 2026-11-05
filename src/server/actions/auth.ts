@@ -19,7 +19,7 @@ import {
 } from "../auth";
 import { audit } from "../events";
 import { hasAnyUser, issueAuthToken } from "../tokens";
-import { appUrl, escapeHtml, isEmailConfigured, sendEmail } from "../email";
+import { appUrl, emailButton, escapeHtml, isEmailConfigured, sendEmail } from "../email";
 
 export type FormState = { ok?: boolean; error?: string; message?: string; fields?: Record<string, string> };
 
@@ -31,7 +31,7 @@ export async function loginAction(_: FormState, fd: FormData): Promise<FormState
   if (!email || !password) return { error: "Enter your email and password." };
 
   const ip = await clientIp();
-  if (rateLimit(`login:${ip}`, 20, 15 * 60_000) || rateLimit(`login:${email}`, 6, 15 * 60_000)) {
+  if ((await rateLimit(`login:${ip}`, 20, 15 * 60_000)) || (await rateLimit(`login:${email}`, 6, 15 * 60_000))) {
     return { error: "Too many sign-in attempts. Please wait 15 minutes and try again." };
   }
 
@@ -69,7 +69,7 @@ export async function requestResetAction(_: FormState, fd: FormData): Promise<Fo
     };
   }
   const ip = await clientIp();
-  if (rateLimit(`reset:${ip}`, 5, 15 * 60_000)) return { error: "Too many requests. Please try again later." };
+  if (await rateLimit(`reset:${ip}`, 5, 15 * 60_000)) return { error: "Too many requests. Please try again later." };
 
   const db = await getDb();
   const [user] = await db.select().from(users).where(sql`lower(${users.email}) = ${email}`).limit(1);
@@ -79,7 +79,7 @@ export async function requestResetAction(_: FormState, fd: FormData): Promise<Fo
     await sendEmail({
       to: user.email,
       subject: "Reset your Vortix CRM password",
-      html: `<p>Hello ${escapeHtml(user.name)},</p><p>Use the link below to set a new password. It expires in 60 minutes and can be used once.</p><p><a href="${link}">Reset password</a></p><p>If you did not request this, you can ignore this email.</p>`,
+      html: `<p>Hello ${escapeHtml(user.name)},</p><p>Use the link below to set a new password. It expires in 60 minutes and can be used once.</p>${emailButton(link, "Reset password")}<p>If you did not request this, you can ignore this email.</p>`,
     });
     await audit(db, { actorId: null, action: "auth.reset_requested", entityType: "user", entityId: user.id });
   }
