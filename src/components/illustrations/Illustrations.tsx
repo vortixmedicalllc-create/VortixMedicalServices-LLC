@@ -16,13 +16,13 @@ function TubeGradient({ id, vertical }: { id: string; vertical?: boolean }) {
   );
 }
 
-/** Homepage hero composition: one continuous tube connecting the three divisions. */
+/** Homepage hero composition: one continuous tube from DME intake through billing to payment. */
 export function HeroVisual({ className }: { className?: string }) {
   const g = useId().replace(/:/g, "");
   return (
     <svg viewBox="0 0 560 600" className={className} role="img" aria-labelledby={`${g}-t`}>
       <title id={`${g}-t`}>
-        Illustration of a single connected line linking DME operations, revenue cycle support, and intelligent automation
+        Illustration of a single connected line running from DME operations through the revenue cycle to claims and payment
       </title>
       <defs>
         <TubeGradient id={`${g}-tube`} vertical />
@@ -61,8 +61,8 @@ export function HeroVisual({ className }: { className?: string }) {
 
       {/* Stations */}
       <Station x={110} y={78} color="var(--brand-blue)" label="DME OPERATIONS" sub="Intake, verification, orders" side="right" />
-      <Station x={420} y={318} color="var(--brand-tube)" label="REVENUE CYCLE" sub="Claims, posting, follow-up" side="left" />
-      <Station x={110} y={500} color="var(--brand-teal)" label="INTELLIGENT AUTOMATION" sub="Documents, workflows, review" side="right" />
+      <Station x={420} y={318} color="var(--brand-tube)" label="DOCUMENTATION" sub="Orders, records, authorization" side="left" />
+      <Station x={110} y={500} color="var(--brand-teal)" label="CLAIMS AND PAYMENT" sub="Submission, posting, follow-up" side="right" />
     </svg>
   );
 }
@@ -266,52 +266,6 @@ export function BillingVignette({ className }: { className?: string }) {
           </g>
         );
       })}
-    </svg>
-  );
-}
-
-/** Unstructured page in, structured fields out, with a human checkpoint. */
-export function AiVignette({ className }: { className?: string }) {
-  const g = useId().replace(/:/g, "");
-  return (
-    <svg viewBox="0 0 420 300" className={className} role="img" aria-labelledby={`${g}-t`}>
-      <title id={`${g}-t`}>
-        Illustration of a document being converted into structured fields and passed to a person for review
-      </title>
-      <defs>
-        <TubeGradient id={`${g}-tube`} />
-      </defs>
-      <rect width="420" height="300" rx="6" fill="var(--brand-slate)" />
-      {/* source document */}
-      <g transform="translate(32 54)">
-        <rect width="112" height="150" rx="4" fill="#fff" opacity="0.96" />
-        {[18, 32, 46, 66, 80, 94, 114, 128].map((y, i) => (
-          <rect key={y} x="14" y={y} width={[70, 84, 60, 84, 52, 78, 66, 40][i]} height="5" rx="2" fill="var(--line)" />
-        ))}
-        <rect x="10" y="62" width="92" height="38" rx="3" fill="none" stroke="var(--brand-teal)" strokeWidth="2" strokeDasharray="4 3" />
-      </g>
-      {/* flow */}
-      <path d="M150 130 C 190 130, 190 130, 222 130" stroke={`url(#${g}-tube)`} strokeWidth="3" fill="none" strokeLinecap="round" />
-      <circle cx="186" cy="130" r="5" fill="var(--brand-teal)" className="pulse-node" />
-      {/* fields */}
-      <g transform="translate(228 54)">
-        {["Field", "Field", "Field", "Field"].map((_, i) => (
-          <g key={i} transform={`translate(0 ${i * 38})`}>
-            <rect width="160" height="28" rx="3" fill="#fff" fillOpacity="0.07" stroke="#fff" strokeOpacity="0.18" />
-            <rect x="10" y="11" width="34" height="6" rx="2" fill="var(--brand-teal-soft)" opacity="0.8" />
-            <rect x="54" y="11" width={[78, 60, 90, 52][i]} height="6" rx="2" fill="#fff" opacity="0.55" />
-          </g>
-        ))}
-        {/* human review */}
-        <g transform="translate(0 162)">
-          <rect width="160" height="34" rx="3" fill="var(--brand-teal)" />
-          <circle cx="20" cy="17" r="8" fill="none" stroke="#fff" strokeWidth="2" />
-          <path d="M16 17l3 3 5-6" stroke="#fff" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="38" y="22" fontFamily="var(--font-display)" fontSize="12.5" fontWeight="700" fill="#fff" letterSpacing="0.6">
-            HUMAN REVIEW
-          </text>
-        </g>
-      </g>
     </svg>
   );
 }

@@ -4,22 +4,22 @@ import { ArrowRight, ClipboardCheck, FileLock2, Repeat, Handshake, Scale } from 
 import { pageMetadata } from "@/lib/seo";
 import { ArrowLink, ButtonLink, Container, Eyebrow, Section, SectionHeader, cx } from "@/components/ui/primitives";
 import { CtaBand, FaqSection, ProcessTimeline } from "@/components/sections/Shared";
-import { AiVignette, BillingVignette, DmeVignette, HeroVisual } from "@/components/illustrations/Illustrations";
+import { BillingVignette, DmeVignette, HeroVisual } from "@/components/illustrations/Illustrations";
 
 export const metadata: Metadata = {
   ...pageMetadata({
-    title: "Healthcare Operations, Medical Billing and AI Services",
+    title: "DME Support and Medical Billing Services",
     description:
-      "Vortix Medical Services provides DME operational support, medical billing and revenue cycle services, and practical AI solutions for healthcare organizations in the United States.",
+      "Vortix Medical Services provides DME operational support and medical billing and revenue cycle services for healthcare organizations in the United States.",
     path: "/",
   }),
-  title: { absolute: "Vortix Medical Services | Healthcare Operations, Medical Billing and AI Services" },
+  title: { absolute: "Vortix Medical Services | DME Support and Medical Billing Services" },
 };
 
 const why = [
   {
     title: "Integrated Healthcare Support",
-    text: "DME operations, billing, and automation under one partner, so information does not have to be re-explained at every handoff.",
+    text: "DME operations and medical billing under one partner, so information does not have to be re-explained at every handoff.",
   },
   {
     title: "Operational Efficiency",
@@ -27,7 +27,7 @@ const why = [
   },
   {
     title: "Technology-Driven Solutions",
-    text: "Where it is practical, we apply automation and AI to reduce manual effort, always with people reviewing the results.",
+    text: "We use dependable software tools and clear checklists to reduce manual effort and avoidable errors.",
   },
   {
     title: "Process-Oriented Approach",
@@ -49,7 +49,7 @@ const audiences = [
   { name: "Healthcare Clinics", text: "Front-end verification and organized revenue cycle processes." },
   { name: "Physicians", text: "Support that lets clinical time stay focused on patient care." },
   { name: "Medical Groups", text: "Consistent workflows across providers, locations, and payers." },
-  { name: "Healthcare Organizations", text: "Operational and automation support shaped around existing systems." },
+  { name: "Healthcare Organizations", text: "Operational and billing support shaped around existing systems." },
 ];
 
 const trust = [
@@ -63,7 +63,7 @@ const trust = [
 const homeFaq = [
   {
     q: "What services does Vortix Medical Services provide?",
-    a: "Vortix provides three service divisions: operational support for durable medical equipment (DME) providers, medical billing and revenue cycle support, and AI and automation services that help reduce repetitive administrative work.",
+    a: "Vortix provides two service divisions: operational support for durable medical equipment (DME) providers, and medical billing and revenue cycle support for healthcare organizations.",
   },
   {
     q: "Who can benefit from Vortix services?",
@@ -76,10 +76,6 @@ const homeFaq = [
   {
     q: "What is medical billing support?",
     a: "Medical billing support covers the administrative steps between a patient visit and final payment, such as eligibility checks, coding support, charge entry, claim submission, payment posting, denial management, and accounts receivable follow-up.",
-  },
-  {
-    q: "How can AI support healthcare operations?",
-    a: "AI can help organize documents, extract information from forms, answer routine questions, and automate repetitive steps in administrative workflows. In every case, the output is reviewed by people. AI does not make clinical or final medical decisions.",
   },
   {
     q: "Can businesses use individual services?",
@@ -102,14 +98,14 @@ export default function HomePage() {
       <section className="relative overflow-hidden bg-white">
         <Container className="grid items-center gap-14 pb-20 pt-12 sm:pt-16 lg:grid-cols-12 lg:gap-10 lg:pb-28 lg:pt-20">
           <div className="lg:col-span-6 xl:col-span-6">
-            <Eyebrow>DME Support · Medical Billing · AI Services</Eyebrow>
+            <Eyebrow>DME Support · Medical Billing</Eyebrow>
             <h1 className="mt-6 text-[2.6rem] font-extrabold leading-[1.04] tracking-[-0.03em] sm:text-[3.4rem] lg:text-[3.6rem] xl:text-[4.1rem]">
               Smarter Healthcare Operations.{" "}
               <span className="text-blue">Better Business Outcomes.</span>
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted sm:text-xl">
-              Vortix Medical Services brings together DME support, medical billing expertise, and intelligent AI
-              solutions to help healthcare organizations operate with greater clarity, efficiency, and confidence.
+              Vortix Medical Services brings together DME support and medical billing expertise to help healthcare
+              organizations operate with greater clarity, efficiency, and confidence.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <ButtonLink href="/services" arrow>
@@ -119,11 +115,10 @@ export default function HomePage() {
                 Request a Consultation
               </ButtonLink>
             </div>
-            <dl className="mt-14 grid max-w-lg grid-cols-3 border-t border-line pt-6">
+            <dl className="mt-14 grid max-w-sm grid-cols-2 border-t border-line pt-6">
               {[
                 ["01", "DME Services", "/services/dme"],
                 ["02", "Medical Billing", "/services/medical-billing"],
-                ["03", "AI Services", "/services/ai"],
               ].map(([n, l, h]) => (
                 <div key={n} className="pr-3">
                   <dt className="font-display text-xs font-bold text-teal-ink">{n}</dt>
@@ -159,9 +154,8 @@ export default function HomePage() {
               on their teams.
             </p>
             <p>
-              Our three divisions are designed to work independently or together. DME operations create the
-              documentation that billing depends on. Billing reveals where processes break down. Thoughtfully applied
-              technology helps reduce the manual steps in between.
+              Our two divisions are designed to work independently or together. DME operations create the
+              documentation that billing depends on, and billing shows where upstream processes break down.
             </p>
             <ArrowLink href="/about">More about Vortix</ArrowLink>
           </div>
@@ -174,7 +168,7 @@ export default function HomePage() {
           <SectionHeader
             eyebrow="Core Services"
             title={<span id="services-heading">Integrated Solutions for Healthcare Operations.</span>}
-            intro="Three focused service areas, each built around the day-to-day realities of healthcare administration."
+            intro="Two focused service areas, each built around the day-to-day realities of healthcare administration."
           />
 
           <div className="mt-16 space-y-24 lg:space-y-32">
@@ -199,31 +193,6 @@ export default function HomePage() {
               cta="Explore Medical Billing"
               visual={<BillingVignette className="h-auto w-full max-w-[520px]" />}
             />
-            {/* AI: full-width dark panel for contrast */}
-            <div className="reveal overflow-hidden rounded-[6px] bg-slate">
-              <div className="grid items-center gap-10 p-8 sm:p-12 lg:grid-cols-2 lg:p-16">
-                <div>
-                  <p className="font-display text-sm font-bold text-teal-soft">03</p>
-                  <h3 className="mt-3 text-[1.9rem] font-bold !text-white sm:text-[2.2rem]">AI Services</h3>
-                  <p className="mt-5 max-w-lg text-lg leading-relaxed text-white/75">
-                    Intelligent automation solutions that help healthcare organizations simplify repetitive tasks,
-                    organize information, and improve operational workflows.
-                  </p>
-                  <ul className="mt-7 grid gap-3 text-white/90 sm:grid-cols-2">
-                    {["Intelligent document processing", "AI chat and voice assistants", "Workflow automation", "Human review at every step"].map((p) => (
-                      <li key={p} className="flex gap-3">
-                        <span aria-hidden className="mt-[0.7rem] h-[2px] w-3 shrink-0 bg-teal" />
-                        {p}
-                      </li>
-                    ))}
-                  </ul>
-                  <ArrowLink href="/services/ai" tone="light" className="mt-9">
-                    Explore AI Services
-                  </ArrowLink>
-                </div>
-                <AiVignette className="h-auto w-full max-w-[520px] justify-self-center lg:justify-self-end" />
-              </div>
-            </div>
           </div>
         </Container>
       </Section>
@@ -309,7 +278,7 @@ export default function HomePage() {
           <SectionHeader
             tone="light"
             eyebrow="Service Spotlight"
-            title={<span id="spotlight-heading">Three Disciplines That Strengthen Each Other.</span>}
+            title={<span id="spotlight-heading">Two Disciplines That Strengthen Each Other.</span>}
             intro="The quality of a claim depends on the quality of the work that came before it. Our divisions are designed with that connection in mind."
           />
           <div className="relative mt-16 grid gap-10 lg:grid-cols-3 lg:gap-0">
@@ -317,7 +286,7 @@ export default function HomePage() {
             {[
               { n: "01", t: "Clean documentation", d: "Accurate intake, verification, and complete paperwork on DME orders reduce the issues that surface later as denials.", c: "ring-blue" },
               { n: "02", t: "Accurate claims", d: "Billing builds on that foundation, and denial patterns show exactly where upstream processes need attention.", c: "ring-tube" },
-              { n: "03", t: "Fewer manual steps", d: "Automation and AI reduce repetitive data entry and routing across both areas, with people reviewing the output.", c: "ring-teal" },
+              { n: "03", t: "Consistent follow-up", d: "Timely A/R and insurance follow-up closes the loop, and what it reveals feeds back into intake and documentation.", c: "ring-teal" },
             ].map((s, i) => (
               <div key={s.n} className="reveal relative lg:px-10 lg:text-center" style={{ transitionDelay: `${i * 90}ms` }}>
                 <span className={cx("relative z-10 grid size-[60px] place-items-center rounded-full bg-slate-deep font-display font-bold ring-[6px] lg:mx-auto", s.c)}>

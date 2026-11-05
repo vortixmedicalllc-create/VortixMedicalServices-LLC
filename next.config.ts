@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
   // Ship the SQL migrations with every server function so DATABASE_AUTO_MIGRATE works on serverless hosts.
   outputFileTracingIncludes: { "/**": ["./drizzle/**/*"] },
   images: { formats: ["image/avif", "image/webp"] },
+  async redirects() {
+    // AI Services was discontinued; keep old links working.
+    return [{ source: "/services/ai", destination: "/services", permanent: true }];
+  },
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

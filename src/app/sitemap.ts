@@ -9,7 +9,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ["/services", 0.9],
     ["/services/dme", 0.9],
     ["/services/medical-billing", 0.9],
-    ["/services/ai", 0.9],
     ["/about", 0.7],
     ["/how-we-work", 0.7],
     ["/resources", 0.6],

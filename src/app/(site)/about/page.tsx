@@ -8,7 +8,7 @@ import { services } from "@/lib/site";
 export const metadata: Metadata = pageMetadata({
   title: "About Us",
   description:
-    "Vortix Medical Services is a B2B healthcare services company bringing together DME operational support, medical billing, and practical AI for healthcare organizations.",
+    "Vortix Medical Services is a B2B healthcare services company bringing together DME operational support and medical billing for healthcare organizations.",
   path: "/about",
 });
 
@@ -34,7 +34,7 @@ export default function AboutPage() {
         eyebrow="About Vortix"
         title="Bringing Healthcare Operations and Technology Together."
         crumbs={[{ label: "About Us" }]}
-        intro="Vortix Medical Services is a healthcare services company that helps organizations manage the administrative side of care through DME operational support, medical billing, and practical AI solutions."
+        intro="Vortix Medical Services is a healthcare services company that helps organizations manage the administrative side of care through DME operational support and medical billing."
       />
 
       {/* Who we are */}
@@ -99,7 +99,7 @@ export default function AboutPage() {
         <Container>
           <SectionHeader
             eyebrow="Our Divisions"
-            title={<span id="divisions-heading">Three Service Divisions, One Standard of Work.</span>}
+            title={<span id="divisions-heading">Two Service Divisions, One Standard of Work.</span>}
             intro="Each division operates independently, and each is held to the same expectations for accuracy, communication, and care."
           />
           <div className="mt-14 divide-y divide-line border-y border-line">

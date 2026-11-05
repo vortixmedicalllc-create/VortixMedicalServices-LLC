@@ -25,8 +25,7 @@ export const runtime = "nodejs";
 const SERVICE_KEYS: Record<string, string> = {
   "DME Services": "dme",
   "Medical Billing": "medical_billing",
-  "AI Services": "ai",
-  "Multiple Services": "multiple",
+  "Both Services": "multiple",
   Other: "other",
 };
 

@@ -1,6 +1,6 @@
 /** Shared contact-form schema, used by both the browser form and the API route. */
 
-export const serviceOptions = ["DME Services", "Medical Billing", "AI Services", "Multiple Services", "Other"] as const;
+export const serviceOptions = ["DME Services", "Medical Billing", "Both Services", "Other"] as const;
 
 export type ContactPayload = {
   fullName: string;

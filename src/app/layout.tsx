@@ -20,14 +20,14 @@ const sourceSans = Source_Sans_3({
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
-  title: { default: `${site.name} | Healthcare Operations, Billing and AI`, template: `%s | ${site.name}` },
+  title: { default: `${site.name} | DME Support and Medical Billing`, template: `%s | ${site.name}` },
   description: site.description,
   applicationName: site.name,
   openGraph: {
     type: "website",
     siteName: site.name,
     locale: "en_US",
-    images: [{ url: site.ogImage, width: 1640, height: 624, alt: `${site.name} brand banner` }],
+    images: [{ url: site.ogImage, width: 1200, height: 630, alt: `${site.name}: DME Services and Medical Billing` }],
   },
   twitter: { card: "summary_large_image" },
   formatDetection: { telephone: false, email: false, address: false },

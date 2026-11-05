@@ -4,12 +4,12 @@ import { ArrowRight } from "lucide-react";
 import { pageMetadata } from "@/lib/seo";
 import { ButtonLink, Container, Section, SectionHeader } from "@/components/ui/primitives";
 import { CtaBand, PageHero } from "@/components/sections/Shared";
-import { AiVignette, BillingVignette, DmeVignette } from "@/components/illustrations/Illustrations";
+import { BillingVignette, DmeVignette } from "@/components/illustrations/Illustrations";
 
 export const metadata: Metadata = pageMetadata({
   title: "Our Services",
   description:
-    "Explore Vortix Medical Services: DME operational support, medical billing and revenue cycle services, and AI and automation for healthcare organizations.",
+    "Explore Vortix Medical Services: DME operational support, and medical billing and revenue cycle services for healthcare organizations.",
   path: "/services",
 });
 
@@ -30,14 +30,6 @@ const items = [
     list: ["Eligibility and registration", "Coding support and charge entry", "Claims preparation and submission", "Payment posting and denial management", "A/R and insurance follow-up"],
     visual: <BillingVignette className="h-auto w-full max-w-[440px]" />,
   },
-  {
-    n: "03",
-    title: "AI Services",
-    href: "/services/ai",
-    text: "Practical AI and automation that helps reduce repetitive administrative work, organize information, and improve workflows, with human review at every step.",
-    list: ["Intelligent document processing", "AI chatbots and voice agents", "Billing workflow automation", "Insurance information extraction", "Operational analytics"],
-    visual: <AiVignette className="h-auto w-full max-w-[440px]" />,
-  },
 ];
 
 export default function ServicesPage() {
@@ -45,7 +37,7 @@ export default function ServicesPage() {
     <>
       <PageHero
         eyebrow="Our Services"
-        title="Three Focused Ways We Support Healthcare Operations."
+        title="Two Focused Ways We Support Healthcare Operations."
         crumbs={[{ label: "Services" }]}
         intro="Engage one service or combine them. Each division is built around the administrative work that keeps healthcare organizations running."
         actions={<ButtonLink href="/contact" arrow>Request a Consultation</ButtonLink>}

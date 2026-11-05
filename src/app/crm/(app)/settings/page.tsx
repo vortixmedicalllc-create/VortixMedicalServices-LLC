@@ -105,11 +105,11 @@ export default async function SettingsPage() {
 
         <Card title="Service categories">
           {manage ? (
-            <LookupEditor kind="services" noun="service category" items={maps.services} fixedKeys={["dme", "medical_billing", "ai", "multiple", "other"]} />
+            <LookupEditor kind="services" noun="service category" items={maps.services} fixedKeys={["dme", "medical_billing", "multiple", "other"]} />
           ) : (
             <p className="text-sm">{maps.services.filter((s) => s.isActive).map((s) => s.label).join(", ")}</p>
           )}
-          {manage && <p className="mt-3 text-xs text-muted">The five default categories match the website contact form options and cannot be deactivated. You can rename them or add more for manual leads.</p>}
+          {manage && <p className="mt-3 text-xs text-muted">The four default categories match the website contact form options and cannot be deactivated. You can rename them or add more for manual leads.</p>}
         </Card>
 
         <Card title="Pipeline stages">

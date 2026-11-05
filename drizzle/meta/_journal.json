@@ -22,6 +22,13 @@
       "when": 1793837069169,
       "tag": "0002_email_outbox_rate_limits",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1793888712650,
+      "tag": "0003_retire_ai_service",
+      "breakpoints": true
     }
   ]
 }

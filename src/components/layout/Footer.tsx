@@ -30,7 +30,7 @@ export function Footer() {
             <Image src={site.logo} alt={site.name} width={2160} height={681} sizes="200px" className="h-auto w-[190px]" />
           </Link>
           <p className="mt-6 max-w-sm text-[0.95rem] leading-relaxed text-muted">
-            A B2B healthcare services partner offering DME operational support, medical billing, and practical AI
+            A B2B healthcare services partner offering DME operational support and medical billing
             solutions for organizations across the United States.
           </p>
           {socials.length > 0 && (

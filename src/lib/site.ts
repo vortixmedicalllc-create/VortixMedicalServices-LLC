@@ -11,10 +11,10 @@ export const site = {
   shortName: "Vortix",
   tagline: "Smarter Healthcare Operations. Better Business Outcomes.",
   description:
-    "Integrated DME support, medical billing solutions, and intelligent AI services designed to help healthcare organizations streamline operations and move forward with confidence.",
+    "Integrated DME support and medical billing solutions designed to help healthcare organizations streamline operations and move forward with confidence.",
   url: (process.env.NEXT_PUBLIC_SITE_URL || "https://www.example.com").replace(/\/$/, ""),
   logo: "/images/brand/vortix-logo.png",
-  ogImage: "/images/brand/vortix-og.png",
+  ogImage: "/og",
 
   contact: {
     // TODO(owner): confirmed public business email, e.g. "info@yourdomain.com"
@@ -57,13 +57,6 @@ export const services: (NavItem & { short: string; number: string })[] = [
     href: "/services/medical-billing",
     short: "Revenue cycle support",
     description: "Claims, payment posting, denial management, and A/R follow-up.",
-  },
-  {
-    number: "03",
-    label: "AI Services",
-    href: "/services/ai",
-    short: "Practical AI and automation",
-    description: "Document processing, assistants, and workflow automation with human review.",
   },
 ];
 

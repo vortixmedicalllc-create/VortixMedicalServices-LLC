@@ -8,7 +8,7 @@ import { ContactForm } from "@/components/forms/ContactForm";
 export const metadata: Metadata = pageMetadata({
   title: "Contact Us",
   description:
-    "Request a consultation with Vortix Medical Services about DME support, medical billing, or AI services for your healthcare organization.",
+    "Request a consultation with Vortix Medical Services about DME support or medical billing for your healthcare organization.",
   path: "/contact",
 });
 

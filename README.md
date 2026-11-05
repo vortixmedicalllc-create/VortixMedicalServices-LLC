@@ -1,5 +1,7 @@
 # Vortix Medical Services: Website and Business CRM
 
+Services offered: **DME Services** and **Medical Billing**. (AI Services was discontinued; `/services/ai` permanently redirects to `/services`, and the CRM's AI service category is retired by migration `0003`.)
+
 One Next.js 15 (App Router) + TypeScript + Tailwind CSS v4 application with two areas:
 
 - **Public website**: `/`, `/about`, `/services/*`, `/how-we-work`, `/resources`, `/contact`, legal pages, and a custom 404 page.
@@ -141,7 +143,6 @@ tests/                   Vitest unit + integration tests
 Search the code for `OWNER ACTION` and `TODO(owner)`:
 
 - `src/lib/site.ts`: public email, phone, hours, address, social URLs, legal entity name.
-- `src/app/(site)/services/ai/page.tsx`: mark AI capabilities that are actually available.
 - `src/app/(site)/services/dme/page.tsx`: confirm billing coordination and refill coordination.
 - `src/lib/articles.ts`: sample articles are drafts (noindex) until reviewed and published.
 - Privacy Policy and Terms of Use need legal review, including the governing state.
@@ -152,7 +153,7 @@ Search the code for `OWNER ACTION` and `TODO(owner)`:
 - No Postgres row-level security. Authorization is enforced in one server-side layer (`src/server/permissions.ts`, `scopeWhere`) that every query goes through.
 - Lead statuses are fixed. Lead sources, service categories, and pipeline stages can be edited in Settings.
 - Email alerts and the daily reminder job need email settings and `CRON_SECRET` to be configured. Mailbox and two-way calendar sync are not built.
-- There are no client portal, DME, billing, or AI operations modules yet. The schema and route structure leave room to add them.
+- There are no client portal, DME operations, or billing operations modules yet. The schema and route structure leave room to add them.
 - **Privacy boundary:** this is a business-relationship CRM. It must not store patient information or other PHI, and it is not represented as HIPAA compliant. Any future module that handles PHI needs its own security architecture, Business Associate Agreements, and compliance review before it is built.
 
 ## Brand system

@@ -21,7 +21,7 @@ export function pageMetadata({ title, description, path, noIndex }: PageMeta): M
       siteName: site.name,
       title: `${title} | ${site.name}`,
       description,
-      images: [{ url: site.ogImage, width: 1640, height: 624, alt: `${site.name} brand banner` }],
+      images: [{ url: site.ogImage, width: 1200, height: 630, alt: `${site.name}: DME Services and Medical Billing` }],
       locale: "en_US",
     },
     twitter: {

@@ -12,8 +12,7 @@ export type ArticleCategory =
   | "Healthcare Operations"
   | "DME"
   | "Medical Billing"
-  | "Revenue Cycle"
-  | "AI and Automation";
+  | "Revenue Cycle";
 
 export type ArticleBlock =
   | { type: "p"; text: string }
@@ -37,7 +36,6 @@ export const categories: ArticleCategory[] = [
   "DME",
   "Medical Billing",
   "Revenue Cycle",
-  "AI and Automation",
 ];
 
 export const articles: Article[] = [
@@ -109,22 +107,6 @@ export const articles: Article[] = [
     ],
   },
   {
-    slug: "practical-ai-healthcare-admin",
-    title: "Where AI Helps in Healthcare Administration, and Where It Should Not",
-    category: "AI and Automation",
-    excerpt:
-      "A grounded look at the administrative tasks suited to automation, and why human review remains essential.",
-    readingMinutes: 6,
-    status: "draft-sample",
-    body: [
-      { type: "p", text: "AI has become a practical tool for some administrative tasks in healthcare. The most successful uses tend to be narrow, well-defined, and paired with human review." },
-      { type: "h2", text: "Good candidates" },
-      { type: "ul", items: ["Classifying and routing incoming documents", "Extracting information from forms and insurance cards", "Drafting routine correspondence for staff review", "Answering common, non-clinical questions", "Summarizing operational data"] },
-      { type: "h2", text: "Clear boundaries" },
-      { type: "p", text: "AI should not make clinical decisions or final determinations that affect patient care. Outputs should be reviewed by qualified people, and any solution that touches patient information requires careful privacy and security review before it is used." },
-    ],
-  },
-  {
     slug: "measuring-operational-health",
     title: "Five Questions for Measuring Operational Health",
     category: "Healthcare Operations",
@@ -134,7 +116,7 @@ export const articles: Article[] = [
     body: [
       { type: "p", text: "Operational problems are easiest to fix when they are visible. These questions can help leaders identify where to look first." },
       { type: "ul", items: ["How long does it take for a new referral or order to be ready to proceed?", "What share of claims are rejected or denied on first submission?", "How much of our accounts receivable is older than 90 days?", "Which tasks does our team repeat most often by hand?", "Where do handoffs between teams most often break down?"] },
-      { type: "p", text: "The answers rarely point to a single fix, but they usually reveal where a process review, additional support, or automation would make the greatest difference." },
+      { type: "p", text: "The answers rarely point to a single fix, but they usually reveal where a process review or additional support would make the greatest difference." },
     ],
   },
 ];

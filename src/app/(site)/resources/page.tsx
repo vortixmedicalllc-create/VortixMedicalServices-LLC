@@ -10,7 +10,7 @@ import { ArticleBrowser } from "@/components/sections/ArticleBrowser";
 export const metadata: Metadata = pageMetadata({
   title: "Resources",
   description:
-    "Guides and insights on healthcare operations, DME documentation, medical billing, revenue cycle management, and practical AI in healthcare administration.",
+    "Guides and insights on healthcare operations, DME documentation, medical billing, and revenue cycle management.",
   path: "/resources",
 });
 
@@ -41,7 +41,7 @@ export default function ResourcesPage() {
         eyebrow="Resource Center"
         title="Practical Guidance for Healthcare Operations."
         crumbs={[{ label: "Resources" }]}
-        intro="Clear explanations of DME documentation, medical billing, revenue cycle management, and practical uses of AI in healthcare administration."
+        intro="Clear explanations of DME documentation, medical billing, and revenue cycle management."
       />
 
       <Section className="!pt-16">

@@ -244,11 +244,11 @@ export default function MedicalBillingPage() {
           <div className="reveal">
             <Eyebrow>Related Service</Eyebrow>
             <p className="mt-3 max-w-2xl font-display text-2xl font-bold text-slate">
-              Reduce manual billing steps with workflow automation and intelligent document processing.
+              Billing runs smoother when DME orders arrive complete. See how we support DME operations.
             </p>
           </div>
-          <ButtonLink href="/services/ai" variant="secondary" arrow className="reveal shrink-0">
-            Explore AI Services
+          <ButtonLink href="/services/dme" variant="secondary" arrow className="reveal shrink-0">
+            Explore DME Services
           </ButtonLink>
         </Container>
       </Section>
